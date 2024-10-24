@@ -11,6 +11,26 @@ async function getXauthToken() {
       },
       {
         headers: {
+           'Content-Type': 'application/json',
+        },
+      },
+    );
+    return res.data.item;
+  } catch (error) {
+    return `Error requesting access token: ${error.message}`;
+  }
+}
+
+async function getXauthToken() {
+  try {
+    const res = await axios.post(
+      `${config.baseUrl}api/access-tokens`,
+      {
+        emailOrUsername: config.adminUser.email,
+        password: config.adminUser.password,
+      },
+      {
+        headers: {
           'Content-Type': 'application/json',
         },
       },
@@ -51,6 +71,28 @@ async function deleteProject() {
     return `Error deleting project: ${error.message}`;
   }
 }
+
+async function createProjectIDs() {
+  try {
+    await axios.post(
+      `${config.baseUrl}api/projects`,
+      {
+        name: "dalello",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${await getXauthToken()}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    return `Error creating projects: ${error.message}`;
+  }
+}
+
+
+console.log(createProjectIDs())
 
 module.exports = {
   deleteProject,
